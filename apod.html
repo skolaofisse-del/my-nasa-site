@@ -1,0 +1,99 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>NASA Live Connection</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #0b0d17; color: white; margin: 0; text-align: center; }
+        .nav-back { padding: 20px; text-align: left; }
+        .nav-back a { color: #00d4ff; text-decoration: none; font-weight: bold; }
+        
+        .live-container { max-width: 900px; margin: 0 auto; padding: 20px; }
+        .status-bar { background: #1a1d29; padding: 10px; border-radius: 10px; border: 1px solid #333; margin-bottom: 30px; display: inline-block; }
+        .dot { height: 10px; width: 10px; background-color: #00ff00; border-radius: 50%; display: inline-block; margin-right: 10px; }
+        
+        .section { background: #11141d; border-radius: 20px; padding: 30px; margin-bottom: 30px; border: 1px solid #222; }
+        img, iframe { width: 100%; border-radius: 15px; border: 1px solid #333; margin: 20px 0; }
+        
+        h1, h2 { color: #00d4ff; }
+        p { line-height: 1.6; color: #ccc; }
+        .loader { border: 4px solid #f3f3f3; border-top: 4px solid #00d4ff; border-radius: 50%; width: 30px; height: 30px; animation: spin 2s linear infinite; margin: 20px auto; }
+        @keyframes spin { 0% { transform: rotate(0deg); } 100% { transform: rotate(360deg); } }
+    </style>
+</head>
+<body>
+
+    <div class="nav-back">
+        <a href="index.html">← ПОВЕРНУТИСЯ В ЦЕНТР КЕРУВАННЯ</a>
+    </div>
+
+    <div class="live-container">
+        <div class="status-bar">
+            <span class="dot"></span> Пряме підключення до api.nasa.gov
+        </div>
+
+        <h1>🛰 Прямий ефір з космосу</h1>
+
+        <div class="section" id="apod-section">
+            <h2>Астрономічне фото дня (APOD)</h2>
+            <div id="apod-content">
+                <div class="loader"></div>
+                <p>Встановлення зв'язку з сервером NASA...</p>
+            </div>
+        </div>
+
+        <div class="section">
+            <h2>Астероїдна активність сьогодні</h2>
+            <div id="asteroids-content">
+                <p>Запит даних про навколоземні об'єкти...</p>
+            </div>
+        </div>
+    </div>
+
+    <script>
+        const API_KEY = 'TgxykzEqFjveNMxBTcanswogAonpIRt3hTFVGdYj';
+
+        async function getNASAData() {
+            // 1. Отримуємо Фото Дня
+            try {
+                const apodRes = await fetch(`https://api.nasa.gov/planetary/apod?api_key=${API_KEY}`);
+                const apodData = await apodRes.json();
+                
+                let mediaHtml = apodData.media_type === 'image' 
+                    ? `<img src="${apodData.url.replace('http://', 'https://')}" alt="APOD">`
+                    : `<iframe src="${apodData.url}" frameborder="0" allowfullscreen></iframe>`;
+
+                document.getElementById('apod-content').innerHTML = `
+                    <h3>${apodData.title}</h3>
+                    ${mediaHtml}
+                    <p style="text-align:justify">${apodData.explanation}</p>
+                `;
+            } catch (err) {
+                document.getElementById('apod-content').innerHTML = `
+                    <p style="color:#ff4444">Помилка завантаження APOD. Можливо, сервер NASA тимчасово недоступний.</p>
+                `;
+            }
+
+            // 2. Отримуємо дані про астероїди
+            try {
+                const today = new Date().toISOString().split('T')[0];
+                const astRes = await fetch(`https://api.nasa.gov/neo/rest/v1/feed?start_date=${today}&end_date=${today}&api_key=${API_KEY}`);
+                const astData = await astRes.json();
+                const count = astData.element_count;
+
+                document.getElementById('asteroids-content').innerHTML = `
+                    <div style="font-size: 1.5em; color: #ffcc00; margin: 10px 0;">
+                        Сьогодні зафіксовано: <strong>${count}</strong> астероїдів поблизу Землі
+                    </div>
+                    <p>Дані отримані через систему моніторингу NASA NEO (Near Earth Objects).</p>
+                `;
+            } catch (err) {
+                document.getElementById('asteroids-content').innerHTML = "<p>Не вдалося отримати дані про астероїди.</p>";
+            }
+        }
+
+        // Запуск при завантаженні
+        getNASAData();
+    </script>
+</body>
+</html>

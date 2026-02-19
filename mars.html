@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="uk">
+<head>
+    <meta charset="UTF-8">
+    <title>Місія Curiosity - 20 кроків</title>
+    <style>
+        body { font-family: 'Segoe UI', sans-serif; background: #1a0f0a; color: #ffccaa; text-align: center; margin: 0; }
+        .gallery-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(280px, 1fr)); gap: 15px; padding: 20px; }
+        .mars-card { background: #2a1b15; border: 1px solid #4a342a; border-radius: 10px; overflow: hidden; transition: 0.3s; }
+        .mars-card:hover { border-color: #ff6600; transform: scale(1.03); }
+        .mars-card img { width: 100%; height: 200px; object-fit: cover; }
+        .info { padding: 15px; text-align: left; }
+        .info h3 { margin: 0; color: #ff6600; font-size: 1.1em; }
+        .info p { font-size: 0.85em; color: #cc9988; }
+        #modal { display: none; position: fixed; top:0; left:0; width:100%; height:100%; background:rgba(0,0,0,0.9); justify-content:center; align-items:center; z-index:100; }
+        #modal img { max-width:90%; max-height:90%; }
+    </style>
+</head>
+<body>
+    <a href="index.html" style="color: #ff6600; text-decoration: none; display: block; margin: 20px;">← НАЗАД ДО ЦЕНТРУ КЕРУВАННЯ</a>
+    <h1>Червона Планета очима Curiosity</h1>
+    <div class="gallery-grid" id="mars-gallery"></div>
+
+    <div id="modal" onclick="this.style.display='none'"><img id="modal-img"></div>
+
+    <script>
+        const marsData = [
+            { t: "Селфі на Марсі 29.10.2019", d: "Робот фотографує себе, щоб інженери могли перевірити стан приладів." },
+            { t: "Кратер Ґейл 14.09.2021", d: "Величезна чаша діаметром 154 км, де мільярди років тому було озеро." },
+            { t: "Гора Шарп 25.03.2021", d: "Центральний пік кратера, на який робот піднімається вже кілька років." },
+            { t: "Блакитний захід 12.05.2015", d: "Через дрібний пил небо навколо Сонця на Марсі стає синім, а не червоним." },
+            { t: "Сліди часу 18.02.2014", d: "Колеса робота сильно зносилися через гостре каміння марсіанської пустелі." },
+            { t: "Пиловий диявол 03.03.2015", d: "Маленькі смерчі часто проносяться поверхнею, очищаючи сонячні панелі (якщо вони є)." },
+            { t: "Чорні дюни 20.07.2016", d: "Пісок на Марсі складається з подрібненого базальту — застиглої лави." },
+            { t: "Сліди свердління 27.06.2014", d: "Кожна дірка — це аналіз хімічного складу породи в міні-лабораторії всередині робота." },
+            { t: "Залізний метеорит 13.08.2009", d: "Цей камінь впав з космосу і не заіржавів, бо в атмосфері Марса майже немає кисню." },
+            { t: "Земля в небі Марса 07.02.2014", d: "Наша планета виглядає як яскрава вечірня зоря для потенційних колоністів." },
+            { t: "Кристали води 12.12.2011", d: "Білі жили в скелях — це мінерали, залишлені водою, що протікала тут колись." },
+            { t: "Велична панорама 25.03.2021", d: "Вид на тисячі метрів навколо, де не ступала нога людини." },
+            { t: "Марсіанські хмари 03.12.2024", d: "Вони складаються з кристалів замороженого вуглекислого газу (сухого льоду)." },
+            { t: "Книга історії 25.03.2025", d: "Шари скель розповідають про те, як Марс перетворювався з вологої планети на пустелю." },
+            { t: "Рука-маніпулятор06.03.2020", d: "Цей інструмент важить як доросла людина, але рухається з точністю до міліметра." },
+            { t: "Річкова галька 17.09.2022", d: "Округле каміння доводить, що тут колись був бурхливий потік води." },
+            { t: "Схована долина 26.01.2020", d: "М'який пісок у цій низині був небезпечною пасткою для важкого робота." },
+            { t: "Тінь мандрівника 24.06.2023", d: "Тінь Curiosity нагадує нам про присутність людського розуму на іншій планеті." },
+            { t: "Стародавнє русло 05.06.2024", d: "Yellowknife Bay — місце, де мільярди років тому була прісна вода." },
+            { t: "Ніч у пустелі 10.08.2012", d: "Небо Марса дуже чисте, що робить його ідеальним для астрономії." }
+        ];
+
+        const container = document.getElementById('mars-gallery');
+        marsData.forEach((item, i) => {
+            container.innerHTML += `
+                <div class="mars-card">
+                    <img src="curiosity/m${i+1}.jpg" alt="${item.t}" onclick="openImg(this.src)">
+                    <div class="info">
+                        <h3>${item.t}</h3>
+                        <p>${item.d}</p>
+                    </div>
+                </div>`;
+        });
+
+        function openImg(src) {
+            document.getElementById('modal-img').src = src;
+            document.getElementById('modal').style.display = 'flex';
+        }
+    </script>
+</body>
+</html>
